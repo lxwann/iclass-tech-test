@@ -1,5 +1,5 @@
 <?php
-$server = "milk";
+$server = "127.0.0.1:13306";
 $username = "root";
 $password = "verysecurerootpasswordiclassTECHtessolution12345672019docker";
 $database = "employees";
@@ -13,18 +13,21 @@ if ($conn->connect_error) {
 
 $query = "
 SELECT
+    d.dept_name,
     e.first_name AS name,
     TIMESTAMPDIFF(YEAR, e.hire_date, CURDATE()) AS serve_for,
-    e.salary,
-    d.dept_name,
     e.gender,
     COUNT(*) AS employees_count,
-    SUM(d.salary) AS employees_salary
+    SUM(s.salary) AS employees_salary
 FROM employees e
-JOIN dept_manager m ON e.emp_no = m.emp_no
-JOIN departments d ON m.dept_no = d.dept_no
-GROUP BY m.emp_no, d.dept_name, e.gender
-ORDER BY serve_for ASC;
+JOIN dept_manager dm ON e.emp_no = dm.emp_no
+JOIN departments d ON dm.dept_no = d.dept_no
+LEFT JOIN dept_emp de ON e.emp_no = de.emp_no
+LEFT JOIN salaries s ON e.emp_no = s.emp_no
+GROUP BY d.dept_name, e.first_name, e.hire_date, e.gender
+ORDER BY d.dept_name ASC, serve_for ASC;
+
+
 ";
 
 $result = $conn->query($query);
@@ -47,14 +50,14 @@ if (!$result) {
             <th>Department</th>
             <th>Name</th>
             <th>Salary</th>
-            <th>Years Served</th>
+            <th>Served for</th>
         </tr>
         <?php
         while ($row = $result->fetch_assoc()) {
             echo "<tr class='gender-" . strtolower($row['gender']) . "'>";
             echo "<td>" . $row['dept_name'] . "</td>";
             echo "<td>" . $row['name'] . "</td>";
-            echo "<td>" . $row['salary'] . "</td>";
+            echo "<td>" . $row['employees_salary'] . "</td>";
             echo "<td>" . $row['serve_for'] . "</td>";
             echo "</tr>";
         }

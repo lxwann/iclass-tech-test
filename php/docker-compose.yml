@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "28081:80"
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: verysecurerootpasswordiclassTECHtessolution12345672019docker
+      MYSQL_DATABASE: test.db
