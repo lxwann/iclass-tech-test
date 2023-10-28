@@ -1,5 +1,5 @@
 <?php
-$server = "milk";
+$server = "127.0.0.1:13306";
 $username = "root";
 $password = "verysecurerootpasswordiclassTECHtessolution12345672019docker";
 $database = "employees";
